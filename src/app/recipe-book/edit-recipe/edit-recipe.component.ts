@@ -76,6 +76,7 @@ export class EditRecipeComponent implements OnInit {
 
   public removeIngredient(index: number): void {
     this.ingredients.removeAt(index);
+    this.form.markAsDirty();
   }
 
   private createNewArrayItem(ingredient: Ingredient): FormGroup {
