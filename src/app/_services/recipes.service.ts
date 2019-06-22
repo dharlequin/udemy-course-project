@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Recipe } from '../recipe-book/recipe.model';
 import { Ingredient } from '../shared/ingredient.model';
-import { Subject } from 'rxjs';
+import { Subject, Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 
 @Injectable({
@@ -9,7 +10,7 @@ import { Subject } from 'rxjs';
 })
 export class RecipesService {
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
 
   private recipes: Recipe[] = [
     new Recipe(
@@ -36,11 +37,22 @@ export class RecipesService {
 
   recipesEmitter = new Subject<Recipe[]>();
 
+  public saveRecipes() {
+    return this.http.put('https://udemy-http-project-3f72d.firebaseio.com/recipes.json', this.recipes);
+  }
+
+  public fetchRecipes() {
+    this.http.get<Recipe[]>('https://udemy-http-project-3f72d.firebaseio.com/recipes.json').subscribe(response => {
+      this.recipes = response;
+      this.updateList();
+    });
+  }
+
   public getRecipes(): Recipe[] {
     return this.recipes.slice();
   }
 
-  public getRecipe(id: number): Recipe {
+  public getRecipe(id: number):Recipe {
     return this.recipes[id];
   }
 

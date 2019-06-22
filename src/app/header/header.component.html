@@ -18,8 +18,9 @@
         <li class="dropdown" appDropdown>
           <a class="dropwdown-toggle link_pointer">Manage <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a class="link_pointer">Save Data</a></li>
-            <li><a class="link_pointer">Fetch Data</a></li>
+            <li><a class="link_pointer" (click)='saveData()'>Save Data</a></li>
+            <li><a class="link_pointer" (click)='fetchData()'>Fetch Data</a></li>
+            <!-- <li><a class="link_pointer" (click)='initDatabase()'>Init Database</a></li> -->
           </ul>
         </li>
       </ul>

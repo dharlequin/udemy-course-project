@@ -1,6 +1,8 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Ingredient } from '../shared/ingredient.model';
 import { Subject } from 'rxjs';
+
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +17,18 @@ export class ShoppingListService {
   ingredientsEmitter = new Subject<Ingredient[]>();
   editting = new Subject<number>();
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
+
+  public saveIngredients() {
+    return this.http.put('https://udemy-http-project-3f72d.firebaseio.com/ingredients.json', this.ingredients);
+  }
+
+  public fetchIngredients() {
+    this.http.get<Ingredient[]>('https://udemy-http-project-3f72d.firebaseio.com/ingredients.json').subscribe(response => {
+      this.ingredients = response;
+      this.updateList();
+    });
+  }
 
   public getIngredients(): Ingredient[] {
     return this.ingredients.slice();
