@@ -1,54 +1,57 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Recipe } from '../recipe.model';
-import { RecipesService } from 'src/app/_services/recipes.service';
-import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
-import { Ingredient } from 'src/app/shared/ingredient.model';
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
+import { Recipe } from "../recipe.model";
+import { RecipesService } from "src/app/_services/recipes.service";
+import { FormGroup, FormControl, Validators, FormArray } from "@angular/forms";
+import { Ingredient } from "src/app/shared/ingredient.model";
 
 @Component({
-  selector: 'app-edit-recipe',
-  templateUrl: './edit-recipe.component.html',
-  styleUrls: ['./edit-recipe.component.scss']
+  selector: "app-edit-recipe",
+  templateUrl: "./edit-recipe.component.html",
+  styleUrls: ["./edit-recipe.component.scss"]
 })
 export class EditRecipeComponent implements OnInit {
-
   private id: number;
   public recipe: Recipe;
   public editMode = false;
   form: FormGroup;
 
-  constructor(private route: ActivatedRoute,
+  constructor(
+    private route: ActivatedRoute,
     private recipesService: RecipesService,
-    private router: Router) { }
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.route.params.subscribe(data => {
-      this.id = +data['id'];
-      this.editMode = data['id'] != null;
+      this.id = +data["id"];
+      this.editMode = data["id"] != null;
       this.initForm();
     });
   }
 
   private initForm(): void {
-    let recipeIngredients = new FormArray([]);
+    const recipeIngredients = new FormArray([]);
 
     this.form = new FormGroup({
-      'name': new FormControl('', Validators.required),
-      'description': new FormControl('', Validators.required),
-      'imagePath': new FormControl('', Validators.required),
+      name: new FormControl("", Validators.required),
+      description: new FormControl("", Validators.required),
+      imagePath: new FormControl("", Validators.required)
     });
 
     if (this.editMode) {
-      this.recipe = this.recipesService.getRecipe(this.id);
-      console.log(this.recipe);
-      this.form.patchValue(this.recipe);
-      if (this.recipe.ingredients) {
-        for (let ingredient of this.recipe.ingredients) {
-          recipeIngredients.push(this.createNewArrayItem(ingredient));
+      this.recipesService.getRecipe(this.id).subscribe(response => {
+        this.recipe = response;
+        console.log(this.recipe);
+        this.form.patchValue(this.recipe);
+        if (this.recipe.ingredients) {
+          for (let ingredient of this.recipe.ingredients) {
+            recipeIngredients.push(this.createNewArrayItem(ingredient));
+          }
         }
-      }
+      });
     }
-    this.form.addControl('ingredients', recipeIngredients);
+    this.form.addControl("ingredients", recipeIngredients);
   }
 
   public onSubmit() {
@@ -67,7 +70,7 @@ export class EditRecipeComponent implements OnInit {
   }
 
   get ingredients() {
-    return this.form.get('ingredients') as FormArray;
+    return this.form.get("ingredients") as FormArray;
   }
 
   public addIngredient(): void {
@@ -81,16 +84,22 @@ export class EditRecipeComponent implements OnInit {
 
   private createNewArrayItem(ingredient: Ingredient): FormGroup {
     return new FormGroup({
-      'name': new FormControl(ingredient ? ingredient.name : '', Validators.required),
-      'amount': new FormControl(ingredient ? ingredient.amount : '', [Validators.required, Validators.pattern(/^[1-9]+[0-9]*$/)])
+      name: new FormControl(
+        ingredient ? ingredient.name : "",
+        Validators.required
+      ),
+      amount: new FormControl(ingredient ? ingredient.amount : "", [
+        Validators.required,
+        Validators.pattern(/^[1-9]+[0-9]*$/)
+      ])
     });
   }
 
   private return() {
     if (this.editMode) {
-      this.router.navigate(['/recipes', this.id]);
+      this.router.navigate(["/recipes", this.id]);
     } else {
-      this.router.navigate(['/recipes']);
+      this.router.navigate(["/recipes"]);
     }
   }
 }

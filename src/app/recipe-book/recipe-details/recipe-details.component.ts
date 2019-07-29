@@ -13,6 +13,7 @@ export class RecipeDetailsComponent implements OnInit {
 
   public recipe: Recipe;
   public id: number;
+
   constructor(private recipesService: RecipesService,
     private slService: ShoppingListService,
     private route: ActivatedRoute,
@@ -21,7 +22,10 @@ export class RecipeDetailsComponent implements OnInit {
   ngOnInit() {
     this.route.params.subscribe(data => {
       this.id = +data['id'];
-      this.recipe = this.recipesService.getRecipe(this.id);
+      this.recipesService.getRecipe(this.id).subscribe((response: Recipe) => {
+        console.log(response);
+        this.recipe = response;
+      });
     });
   }
 

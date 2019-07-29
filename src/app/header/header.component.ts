@@ -28,14 +28,4 @@ export class HeaderComponent implements OnInit {
     this.recipeService.fetchRecipes();
     this.slService.fetchIngredients();
   }
-
-  // public initDatabase(): void {
-  //   this.recipeService.initRecipes().subscribe(response => {
-  //     console.log(response);
-  //   });
-  //   this.slService.initIngredients().subscribe(response => {
-  //     console.log(response);
-  //   });
-  // }
-
 }
